@@ -33,7 +33,7 @@ $(document).ready(function() {
     //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
     $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
     //$('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
-  });
+  }); //END SOCKET server_message
 
   function pieOptions(yesPercent, noPercent) {
     return {
@@ -130,7 +130,7 @@ $(document).ready(function() {
   }
  }
 
-socket.on('server_like', function(data){
+  socket.on('server_like', function(data){
   /* how the server responds
    var jsonResponse = JSON.stringify({
    "likeNumber": vote[0],
@@ -142,14 +142,56 @@ socket.on('server_like', function(data){
   //parse receiver and add to correct question
   var vote = JSON.parse(data);
 
-  if (vote.answer === "like"){
-    buildString =  vote.likeCount + ' like';
+    var buildString =  vote.likeCount + ' like';
     $('[name=' + vote.likeNumber + ']').siblings('.like').first().html(buildString);
-  }
-  else {
     buildString = vote.notLikeCount + ' not like';
     $('[name=' + vote.likeNumber + ']').siblings('.like').first().next().html(buildString);
-  }
-});
+}); //END SOCKET server_like
 
+  socket.on('server_poll_init', function(data){
+    /* how the server responds
+     var jsonResponse = JSON.stringify({
+     "likeNumber": vote[0],
+     "answer": vote[1],
+     "likeCount": likeArr[parseInt(vote[0])*2] || 0,
+     "notLikeCount": likeArr[parseInt(vote[0])*2+1] || 0
+     })
+     */
+    //parse receiver and add to correct question
+
+    var votes = JSON.parse(data);
+
+    votes.map(function(vote, index){
+      var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
+      var noPercent = 1 - yesPercent;
+      var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
+      //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+      //$('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+
+    })
+  }); //END SOCKET server_poll_init
+
+  socket.on('server_like_init', function(data){
+    /* how the server responds
+     var jsonResponse = JSON.stringify({
+     "likeNumber": vote[0],
+     "answer": vote[1],
+     "likeCount": likeArr[parseInt(vote[0])*2] || 0,
+     "notLikeCount": likeArr[parseInt(vote[0])*2+1] || 0
+     })
+     */
+    //parse receiver and add to correct question
+
+    var votes = JSON.parse(data);
+
+    votes.map(function(vote, index){
+        var buildString =  vote.likeCount + ' like';
+        $('[name=' + vote.likeNumber + ']').siblings('.like').first().html(buildString);
+
+        buildString = vote.notLikeCount + ' not like';
+        $('[name=' + vote.likeNumber + ']').siblings('.like').first().next().html(buildString);
+    })
+  }); //END SOCKET server_like_init
+  //END DOCUMENT READY
 });

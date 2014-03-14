@@ -51,6 +51,43 @@ var likesArr = [],// array of yes, no answers for each question [3, 5] is 3 yese
 
 io.sockets.on('connection', function(socket){
   console.log('Client Connected');
+//if they have answered any questions, show them on client (ie send data)
+  (function voteInit(){
+    var conIdx = voterAddressArr.indexOf(socket.handshake.address.address);
+    if (conIdx !== -1) {
+      //send data for questions ip as answered
+      var ed = voterArr[conIdx].votes.map(function(unit, index){return unit !== "undefined" ? index : false}).filter(function(unit){return unit});
+      // for each question in ed, build a jsonResponse and concat
+      var jsonInit = JSON.stringify(ed.reduce(function(sum, unit, index){  return sum.concat({
+        "questionNumber": unit,
+        "answer": voterArr[conIdx].votes[unit],
+        "yesCount": answerArr[parseInt(unit)*2] || 0,
+        "noCount": answerArr[parseInt(unit)*2+1] || 0
+      })
+      }, [])
+      );
+      socket.emit('server_poll_init',jsonInit);
+    };
+  }());
+
+  (function likeInit(){
+      var conIdx = likerAddressArr.indexOf(socket.handshake.address.address);
+      if (conIdx !== -1) {
+        //send data for questions ip as answered
+        var ed = likerArr[conIdx].votes.map(function(unit, index){return unit !== "undefined" ? index : false}).filter(function(unit){return unit});
+        // for each question in ed, build a jsonResponse and concat
+        jsonInit = JSON.stringify(ed.reduce(function(sum, unit, index){  return sum.concat({
+          "likeNumber": unit,
+          "answer": likerArr[conIdx].votes[unit],
+          "likeCount": likesArr[parseInt(unit)*2] || 0,
+          "notLikeCount": likesArr[parseInt(unit)*2+1] || 0
+        })
+        }, [])
+        );
+        socket.emit('server_like_init',jsonInit);
+      };
+    }());
+
 
   socket.on('message', function(data){
     /*
@@ -63,7 +100,7 @@ io.sockets.on('connection', function(socket){
      */
     //console.log(socket)
     var address = socket.handshake.address;
-    console.log("New connection from " + address.address + ":" + address.port);
+    console.log("Another connection from " + address.address + ":" + address.port);
     //check for presence
     var idx = voterAddressArr.indexOf(address.address);
     if ( idx !== -1) {
@@ -149,7 +186,7 @@ io.sockets.on('connection', function(socket){
 //    socket.emit('server_message',jsonResponse);
 
   });
-  
+
   socket.on('disconnect', function(){
     console.log('Client Disconnected.');
   });
