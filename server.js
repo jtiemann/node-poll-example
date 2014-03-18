@@ -5,7 +5,7 @@ var connect = require('connect')
     , port = (process.env.PORT || 4001);
 
 //Setup Express
-var server = express.createServer();
+var server = express();
 server.configure(function(){
     server.set('views', __dirname + '/views');
     server.set('view options', { layout: false });
@@ -35,10 +35,11 @@ server.configure(function(){
 //                },status: 500 });
 //    }
 //});
-server.listen( port);
+
+var theServer = server.listen(port);
 
 //Setup Socket.IO
-var io = io.listen(server);
+var sockets = io.listen(theServer);
 var answerArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
     voter = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
     voterAddressArr = [], //an array of voter ip's'
@@ -49,7 +50,7 @@ var likesArr = [],// array of yes, no answers for each question [3, 5] is 3 yese
   likerAddressArr = [], //an array of voter ip's'
   likerArr = []; // array of voter objects
 
-io.sockets.on('connection', function(socket){
+sockets.on('connection', function(socket){
   console.log('Client Connected');
 //if they have answered any questions, show them on client (ie send data)
   (function voteInit(){
