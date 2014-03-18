@@ -17,24 +17,24 @@ server.configure(function(){
 });
 
 //setup the errors
-server.error(function(err, req, res, next){
-    if (err instanceof NotFound) {
-        res.render('404.jade', { locals: { 
-                  title : '404 - Not Found'
-                 ,description: ''
-                 ,author: ''
-                 ,analyticssiteid: 'XXXXXXX' 
-                },status: 404 });
-    } else {
-        res.render('500.jade', { locals: { 
-                  title : 'The Server Encountered an Error'
-                 ,description: ''
-                 ,author: ''
-                 ,analyticssiteid: 'XXXXXXX'
-                 ,error: err 
-                },status: 500 });
-    }
-});
+//server.error(function(err, req, res, next){
+//    if (err instanceof NotFound) {
+//        res.render('404.jade', { locals: {
+//                  title : '404 - Not Found'
+//                 ,description: ''
+//                 ,author: ''
+//                 ,analyticssiteid: 'XXXXXXX'
+//                },status: 404 });
+//    } else {
+//        res.render('500.jade', { locals: {
+//                  title : 'The Server Encountered an Error'
+//                 ,description: ''
+//                 ,author: ''
+//                 ,analyticssiteid: 'XXXXXXX'
+//                 ,error: err
+//                },status: 500 });
+//    }
+//});
 server.listen( port);
 
 //Setup Socket.IO
@@ -210,15 +210,15 @@ server.get('/500', function(req, res){
 });
 
 //The 404 Route (ALWAYS Keep this as the last route)
-server.get('/*', function(req, res){
-    throw new NotFound;
-});
-
-function NotFound(msg){
-    this.name = 'NotFound';
-    Error.call(this, msg);
-    Error.captureStackTrace(this, arguments.callee);
-}
+//server.get('/*', function(req, res){
+//    throw new NotFound;
+//});
+//
+//function NotFound(msg){
+//    this.name = 'NotFound';
+//    Error.call(this, msg);
+//    Error.captureStackTrace(this, arguments.callee);
+//}
 
 
 console.log('Listening on http://0.0.0.0:' + port );
