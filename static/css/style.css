@@ -196,7 +196,6 @@ textarea {
        (min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
 }
-
 /* ==========================================================================
    Print styles.
    Inlined to avoid required HTTP connection: h5bp.com/r
@@ -267,8 +266,12 @@ textarea {
 #poll{
     width:100%;
     //height: 2000px;
-    margin: 3% 3% 3% 3%%;
+    margin: 3% 3% 3% 3%;
     //border-style: solid;
+}
+
+#poll p {
+
 }
 
 div[id^="highcharts-"] > svg > text > tspan {
@@ -279,6 +282,35 @@ div[id^="highcharts-"] > svg > text > tspan {
 }
 .like ~ .like {
     margin: 0 10px 0 0;
+}
+
+div[id^="highcharts-"] {
+    margin: 0 0 0 20%;
+    overflow: visible  !important;
+
+}
+.highcharts-container svg {
+    border-style: solid;
+    border-color: aliceblue;
+    width: 98%;
+    height: 97%;
+    margin: 0 0 0 0;
+}
+
+@media all and (max-width: 500px) {
+
+    div[id^="highcharts-"] {
+    margin: 0 0 0 0;
+    overflow: visible  !important;
+    }
+
+    .highcharts-container svg {
+    border-style: solid;
+    border-color: aliceblue;
+    width: 98%;
+    height: 97%;
+    margin: 0 0 0 0;
+    }
 }
 /* for responsive highcharts, wrap chart...
 <div class="chart-wrapper">

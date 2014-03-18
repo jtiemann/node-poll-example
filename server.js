@@ -43,7 +43,7 @@ var answerArr = [],// array of yes, no answers for each question [3, 5] is 3 yes
     voter = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
     voterAddressArr = [], //an array of voter ip's'
     voterArr = []; // array of voter objects
-;
+
 var likesArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
   liker = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
   likerAddressArr = [], //an array of voter ip's'
