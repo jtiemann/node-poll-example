@@ -3,7 +3,7 @@
 
 $(document).ready(function() {   
 
-  var socket = io.connect();
+  var socket = io.connect(), gChartType;
   //var answerArr = [];
 
   $('.sender').bind('click', function(evt) {
@@ -15,6 +15,19 @@ $(document).ready(function() {
     //alert('thanks for your vote: ' + (evt.currentTarget.value + ' on the question:' + $(this).siblings().first().text()));
     socket.emit('like', JSON.stringify({"name": evt.currentTarget.name, "answer": evt.currentTarget.value }));
   });
+
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    $('#multi-vote').css("display", "block");
+    $('#multi-vote').bind('click', function(evt) {
+      this.value = this.value === 'true' ? 'false' : 'true';
+      this.innerText = this.value === 'true' ? "multiVote is on" : "multiVote is off"
+      socket.emit('multiVote', this.value);
+    });
+    $('#chart-type').css("display", "block");
+    $('#chart-type').bind('change', function(evt) {
+      socket.emit('chartType', this.value);
+    });
+  }
 
   socket.on('server_message', function(data){
     /* how the server responds
@@ -30,15 +43,20 @@ $(document).ready(function() {
     var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
     var noPercent = 1 - yesPercent;
     var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
-    //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
-    $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
-    //$('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+    if (vote.chartType === "bar"){
+      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+    }
+    else {
+      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+      //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+    }
   }); //END SOCKET server_message
 
   function pieOptions(yesPercent, noPercent) {
     return {
       chart: {
         //renderTo: 'container',
+        width: '400',
         height: '200',
         type: 'pie',
         plotBackgroundColor: null,
@@ -165,10 +183,17 @@ $(document).ready(function() {
       var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
       var noPercent = 1 - yesPercent;
       var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
-      //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
-      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
-      //$('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+      // todo: refactor side effect
+       gChartType = vote.chartType
+      $('#chart-type').val(gChartType);
 
+      if (vote.chartType === "bar"){
+        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+      }
+      else {
+        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+        //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+      }
     })
   }); //END SOCKET server_poll_init
 

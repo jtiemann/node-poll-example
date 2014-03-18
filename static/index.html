@@ -7,10 +7,15 @@
     <meta name="description">
     <meta name="author">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 <div id="poll">
+    <button id="multi-vote" value="false" style="display:none;">multiVote is off</button>
+    <select id="chart-type" style="display:none;">
+        <option value="bar">bar</option>
+        <option value="pie">pie</option>
+    </select>
     <div>
         <p>Do you code javascript daily?
             <button class="like" name="1" value="like">like</button>

@@ -7,39 +7,17 @@ var connect = require('connect')
 //Setup Express
 var server = express();
 server.configure(function(){
-    server.set('views', __dirname + '/views');
-    server.set('view options', { layout: false });
-    server.use(connect.bodyParser());
-    server.use(express.cookieParser());
-    server.use(express.session({ secret: "shhhhhhhhh!"}));
+    //server.use(connect.bodyParser());
+    //server.use(express.cookieParser());
+    //server.use(express.session({ secret: "shhhhhhhhh!"}));
     server.use(connect.static(__dirname + '/static'));
     server.use(server.router);
 });
 
-//setup the errors
-//server.error(function(err, req, res, next){
-//    if (err instanceof NotFound) {
-//        res.render('404.jade', { locals: {
-//                  title : '404 - Not Found'
-//                 ,description: ''
-//                 ,author: ''
-//                 ,analyticssiteid: 'XXXXXXX'
-//                },status: 404 });
-//    } else {
-//        res.render('500.jade', { locals: {
-//                  title : 'The Server Encountered an Error'
-//                 ,description: ''
-//                 ,author: ''
-//                 ,analyticssiteid: 'XXXXXXX'
-//                 ,error: err
-//                },status: 500 });
-//    }
-//});
-
-var theServer = server.listen(port);
-
 //Setup Socket.IO
-var sockets = io.listen(theServer);
+var sockets = io.listen(server.listen(port));
+var multiVote = false;
+var chartType = "bar";
 var answerArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
     voter = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
     voterAddressArr = [], //an array of voter ip's'
@@ -63,7 +41,8 @@ sockets.on('connection', function(socket){
         "questionNumber": unit,
         "answer": voterArr[conIdx].votes[unit],
         "yesCount": answerArr[parseInt(unit)*2] || 0,
-        "noCount": answerArr[parseInt(unit)*2+1] || 0
+        "noCount": answerArr[parseInt(unit)*2+1] || 0,
+        "chartType": chartType || "bar"
       })
       }, [])
       );
@@ -101,7 +80,7 @@ sockets.on('connection', function(socket){
      */
     //console.log(socket)
     var address = socket.handshake.address;
-    console.log("Another connection from " + address.address + ":" + address.port);
+    console.log("Another vote connection from " + address.address + ":" + address.port);
     //check for presence
     var idx = voterAddressArr.indexOf(address.address);
     if ( idx !== -1) {
@@ -115,14 +94,15 @@ sockets.on('connection', function(socket){
     var vote = JSON.parse(data); //data.name = question number, data.answer = answer
     var arrIndex = vote.answer === 'yes' ? parseInt(vote.name) * 2 : parseInt(vote.name) * 2 + 1
 
-    if (!voter.votes[vote.name]) {
+    if (!voter.votes[vote.name] || multiVote) {
       voter.votes[vote.name] = vote.answer
       answerArr[arrIndex] = answerArr[arrIndex] + 1 || 1;
       var jsonResponse = JSON.stringify({
         "questionNumber": vote.name,
         "answer": vote.answer,
         "yesCount": answerArr[parseInt(vote.name)*2] || 0,
-        "noCount": answerArr[parseInt(vote.name)*2+1] || 0
+        "noCount": answerArr[parseInt(vote.name)*2+1] || 0,
+        "chartType": chartType || 'bar'
       })
       socket.broadcast.emit('server_message',jsonResponse);
       socket.emit('server_message',jsonResponse);
@@ -150,7 +130,7 @@ sockets.on('connection', function(socket){
      */
     //console.log(socket)
     var address = socket.handshake.address;
-    console.log("New connection from " + address.address + ":" + address.port);
+    console.log("Another like connection from " + address.address + ":" + address.port);
     //check for presence
     var idx = likerAddressArr.indexOf(address.address);
     if ( idx !== -1) {
@@ -191,6 +171,15 @@ sockets.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('Client Disconnected.');
   });
+
+  socket.on('multiVote', function(data){
+    multiVote = data === "true" ? true : false;
+  });
+
+  socket.on('chartType', function(data){
+    chartType = data === "bar" ? "bar" : "pie";
+  });
+
 });
 
 
@@ -203,23 +192,5 @@ sockets.on('connection', function(socket){
 server.get('/', function(req,res){
   res.render('index.html');
 });
-
-
-//A Route for Creating a 500 Error (Useful to keep around)
-server.get('/500', function(req, res){
-    throw new Error('This is a 500 Error');
-});
-
-//The 404 Route (ALWAYS Keep this as the last route)
-//server.get('/*', function(req, res){
-//    throw new NotFound;
-//});
-//
-//function NotFound(msg){
-//    this.name = 'NotFound';
-//    Error.call(this, msg);
-//    Error.captureStackTrace(this, arguments.callee);
-//}
-
 
 console.log('Listening on http://0.0.0.0:' + port );
