@@ -18,13 +18,14 @@ $(document).ready(function() {
 
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     $('#multi-vote').css("display", "block");
-    $('#multi-vote').bind('click', function(evt) {
+
+    $('#multi-vote').on('click', function(evt) {
       this.value = this.value === 'true' ? 'false' : 'true';
       this.innerText = this.value === 'true' ? "multiVote is on" : "multiVote is off"
       socket.emit('multiVote', this.value);
     });
     $('#chart-type').css("display", "block");
-    $('#chart-type').bind('change', function(evt) {
+    $('#chart-type').on('change', function(evt) {
       socket.emit('chartType', this.value);
     });
   }
@@ -40,15 +41,18 @@ $(document).ready(function() {
      */
     //parse receiver and add to correct question
     var vote = JSON.parse(data);
+
     var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
     var noPercent = 1 - yesPercent;
     var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
     if (vote.chartType === "bar"){
       $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
     }
-    else {
+    else if (vote.chartType === "pie") {
       $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
-      //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+    }
+    else {
+      $('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
     }
   }); //END SOCKET server_message
 
@@ -172,27 +176,33 @@ $(document).ready(function() {
      "likeNumber": vote[0],
      "answer": vote[1],
      "likeCount": likeArr[parseInt(vote[0])*2] || 0,
-     "notLikeCount": likeArr[parseInt(vote[0])*2+1] || 0
+     "notLikeCount": likeArr[parseInt(vote[0])*2+1] || 0,
+     "chartType": 'pie',
+     "multiVote": 'false'
      })
      */
     //parse receiver and add to correct question
 
     var votes = JSON.parse(data);
+    $('#multi-vote').val(votes[0].multiVote === 'true' ? 'true' : 'false')
+    $('#multi-vote').text('multiVote is ' + (votes[0].multiVote === 'true' ? 'on' : 'off'));
 
     votes.map(function(vote, index){
       var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
       var noPercent = 1 - yesPercent;
-      var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
-      // todo: refactor side effect
-       gChartType = vote.chartType
+      var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N';
+
+      gChartType = vote.chartType
       $('#chart-type').val(gChartType);
 
       if (vote.chartType === "bar"){
         $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
       }
-      else {
+      else if (vote.chartType === "pie") {
         $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
-        //$('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+      }
+      else {
+        $('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
       }
     })
   }); //END SOCKET server_poll_init
@@ -218,5 +228,34 @@ $(document).ready(function() {
         $('[name=' + vote.likeNumber + ']').siblings('.like').first().next().html(buildString);
     })
   }); //END SOCKET server_like_init
+
+  socket.on('server_poll_init_admin', function(data){
+    //parse receiver and add to correct question
+
+    var voterArray = JSON.parse(data);
+
+    $('#multi-vote').val(votes[0].multiVote === 'true' ? 'true' : 'false')
+    $('#multi-vote').text('multiVote is ' + (votes[0].multiVote === 'true' ? 'on' : 'off'))
+
+    voterArray.map(function(vote, index){
+
+//      var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
+//      var noPercent = 1 - yesPercent;
+//      var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
+//      // todo: refactor side effect
+//      gChartType = vote.chartType
+//      $('#chart-type').val(gChartType);
+//
+//      if (vote.chartType === "bar"){
+//        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+//      }
+//      else if (vote.chartType === "pie") {
+//        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+//      }
+//      else {
+//        $('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
+//      }
+    })
+  }); //todo
   //END DOCUMENT READY
 });

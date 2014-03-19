@@ -16,7 +16,7 @@ server.configure(function(){
 
 //Setup Socket.IO
 var sockets = io.listen(server.listen(port));
-var multiVote = false;
+var multiVote = 'false';
 var chartType = "bar";
 var answerArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
     voter = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
@@ -33,21 +33,36 @@ sockets.on('connection', function(socket){
 //if they have answered any questions, show them on client (ie send data)
   (function voteInit(){
     var conIdx = voterAddressArr.indexOf(socket.handshake.address.address);
-    if (conIdx !== -1) {
-      //send data for questions ip as answered
-      var ed = voterArr[conIdx].votes.map(function(unit, index){return unit !== "undefined" ? index : false}).filter(function(unit){return unit});
+    if (conIdx !== -1 ) {
+      //send data for questions ip has answered
+      var answeredQuestionsIndexArray = voterArr[conIdx].votes.map(function(unit, index){return unit !== "undefined" ? index : false}).filter(function(unit){return unit});
       // for each question in ed, build a jsonResponse and concat
-      var jsonInit = JSON.stringify(ed.reduce(function(sum, unit, index){  return sum.concat({
+      var jsonInit = JSON.stringify(answeredQuestionsIndexArray.reduce(function(sum, unit, index){
+        socket.join(unit);
+
+        return sum.concat({
         "questionNumber": unit,
         "answer": voterArr[conIdx].votes[unit],
         "yesCount": answerArr[parseInt(unit)*2] || 0,
         "noCount": answerArr[parseInt(unit)*2+1] || 0,
-        "chartType": chartType || "bar"
+        "chartType": chartType || "bar",
+        "multiVote": multiVote
       })
       }, [])
       );
+      //add socket to all applicable rooms
+
+
       socket.emit('server_poll_init',jsonInit);
-    };
+    }
+//    else {
+//      if (socket.handshake.address.address == '127.0.0.1'){
+//        //admin sees all
+//        console.log("I'm an ADMIN!!");
+//        socket.emit('server_poll_init_admin', JSON.stringify(answerArr));
+//
+//      }
+//    }
   }());
 
   (function likeInit(){
@@ -88,13 +103,13 @@ sockets.on('connection', function(socket){
     }
     else {
       voterAddressArr.push(address.address);
-      voter = voterArr[voterAddressArr.length-1] = {"address": address.address, "votes": []};
+      voter = voterArr[voterAddressArr.length-1] = {"address": address.address, "socketid": socket.id, "votes": []};
     }
 
     var vote = JSON.parse(data); //data.name = question number, data.answer = answer
     var arrIndex = vote.answer === 'yes' ? parseInt(vote.name) * 2 : parseInt(vote.name) * 2 + 1
 
-    if (!voter.votes[vote.name] || multiVote) {
+    if (!voter.votes[vote.name] || multiVote === 'true') {
       voter.votes[vote.name] = vote.answer
       answerArr[arrIndex] = answerArr[arrIndex] + 1 || 1;
       var jsonResponse = JSON.stringify({
@@ -104,18 +119,13 @@ sockets.on('connection', function(socket){
         "noCount": answerArr[parseInt(vote.name)*2+1] || 0,
         "chartType": chartType || 'bar'
       })
-      socket.broadcast.emit('server_message',jsonResponse);
+      // only broadcast to clients that have answered the question
+      socket.join(vote.name);
+      socket.broadcast.to(vote.name).emit('server_message', jsonResponse) //emit to 'room' except this socket
+
+      //socket.broadcast.emit('server_message',jsonResponse);
       socket.emit('server_message',jsonResponse);
     }
-
-//    var jsonResponse = JSON.stringify({
-//      "questionNumber": vote.name,
-//      "answer": vote.answer,
-//      "yesCount": answerArr[parseInt(vote.name)*2] || 0,
-//      "noCount": answerArr[parseInt(vote.name)*2+1] || 0
-//    })
-//    socket.broadcast.emit('server_message',jsonResponse);
-//    socket.emit('server_message',jsonResponse);
 
   });
 
@@ -173,11 +183,12 @@ sockets.on('connection', function(socket){
   });
 
   socket.on('multiVote', function(data){
-    multiVote = data === "true" ? true : false;
+    multiVote = (data === "true" ? 'true' : 'false');
   });
 
   socket.on('chartType', function(data){
-    chartType = data === "bar" ? "bar" : "pie";
+    var chartTypes = ['bar','pie','text']
+    chartType = chartTypes.filter(function(unit, index){return unit === data})[0];
   });
 
 });
