@@ -8,11 +8,17 @@
     <meta name="author">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/main.css">
+
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" href="/css/TimeCircles.css" />-->
+
 </head>
 <body>
 <h2>vote: node-socket.io example</h2>
 
 <div id="poll">
+    <!--<div id="CountDownTimer" data-timer="60" style="width: 1000px; height: 250px;"></div>-->
+
     <button id="multi-vote" value="false" style="display:none;">multiVote is off</button>
     <select id="chart-type" style="display:none;">
         <option value="bar">bar</option>
@@ -21,62 +27,63 @@
     </select>
     <div>
         <p>Do you code javascript daily?
-            <button class="like" name="1" value="like">like</button>
-            <button class="like" name="1" value="notLike">not like</button>
+            <button class="like" name="0" value="like">like</button>
+            <button class="like" name="0" value="notLike">not like</button>
         </p>
-        <input class="sender" type="radio" name="1" value="yes">yes<br>
-        <input class="sender" type="radio" name="1" value="no">no<br>
+        <input class="sender" type="radio" name="0" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="0" value="no" data-index="1">no<br>
+        <input class="sender" type="radio" name="0" value="sometimes" data-index="2">Sometimes<br>
         <label class="result"></label>
     </div>
     <div>
         <p>Do you use javascript outside of the browser (node, postgres,..)?
-            <button class="like" name="2" value="like">like</button>
-            <button class="like" name="2" value="notLike">not like</button>
+            <button class="like" name="1" value="like">like</button>
+            <button class="like" name="1" value="notLike">not like</button>
         </p>
-        <input class="sender" type="radio" name="2" value="yes">yes<br>
-        <input class="sender" type="radio" name="2" value="no">no<br>
+        <input class="sender" type="radio" name="1" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="1" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
     <div>
         <p>Do you use currying, partials, or memoization?
-            <button class="like" name="3" value="like">like</button>
-            <button class="like" name="3" value="notLike">not like</button>
+            <button class="like" name="2" value="like">like</button>
+            <button class="like" name="2" value="notLike">not like</button>
         </p>
-        <input class="sender" type="radio" name="3" value="yes">yes<br>
-        <input class="sender" type="radio" name="3" value="no">no<br>
+        <input class="sender" type="radio" name="2" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="2" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
     <div>
         <p>Do you use map, filter, and reduce idiomatically?
-            <button class="like" name="4" value="like">like</button>
-            <button class="like" name="4" value="notLike">not like</button>
+            <button class="like" name="3" value="like">like</button>
+            <button class="like" name="3" value="notLike">not like</button>
         </p>
-        <input class="sender" type="radio" name="4" value="yes">yes<br>
-        <input class="sender" type="radio" name="4" value="no">no<br>
+        <input class="sender" type="radio" name="3" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="3" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
     <div>
         <p>Do you know when/why variable hoisting occurs?
-            <button class="like" name="5" value="like">like</button>
-            <button class="like" name="5" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="5" value="yes">yes<br>
-        <input class="sender" type="radio" name="5" value="no">no<br>
+            <button class="like" name="4" value="like">like</button>
+            <button class="like" name="4" value="notLike">not like</button></p>
+        <input class="sender" type="radio" name="4" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="4" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
     <div>
         <p>[1,2,3].reduce(function(sum, unit, index){return sum * (unit + 1) },1) === 24?
-            <button class="like" name="6" value="like">like</button>
-            <button class="like" name="6" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="6" value="yes">yes<br>
-        <input class="sender" type="radio" name="6" value="no">no<br>
+            <button class="like" name="5" value="like">like</button>
+            <button class="like" name="5" value="notLike">not like</button></p>
+        <input class="sender" type="radio" name="5" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="5" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
     <div>
         <p>[1,2,3].reduce(function(sum, unit, index){return sum += unit * unit * unit },0) === 36?
-            <button class="like" name="7" value="like">like</button>
-            <button class="like" name="7" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="7" value="yes">yes<br>
-        <input class="sender" type="radio" name="7" value="no">no<br>
+            <button class="like" name="6" value="like">like</button>
+            <button class="like" name="6" value="notLike">not like</button></p>
+        <input class="sender" type="radio" name="6" value="yes" data-index="0">yes<br>
+        <input class="sender" type="radio" name="6" value="no" data-index="1">no<br>
         <label class="result"></label>
     </div>
 </div>
@@ -85,6 +92,8 @@
 
 <footer>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="/js/TimeCircles.js"></script>-->
+    <!--<script>$("#CountDownTimer").TimeCircles({ time: { Days: { show: false }, Hours: { show: false }, Minutes: { show: false } }});</script>-->
     <script src="http://code.highcharts.com/highcharts.js"></script>
     <script defer src="/js/main.js"></script>
     <script defer src="/socket.io/socket.io.js"></script>

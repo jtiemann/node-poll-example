@@ -4,11 +4,16 @@
 $(document).ready(function() {   
 
   var socket = io.connect(), gChartType;
-  //var answerArr = [];
+
+  socket.emit('setup', {
+    "title": "T's JS Test1",
+    "numAnswers": [3,2,2,2,2,2,2]
+  });
 
   $('.sender').bind('click', function(evt) {
    //alert('thanks for your vote: ' + (evt.currentTarget.value + ' on the question:' + $(this).siblings().first().text()));
-   socket.emit('message', JSON.stringify({"name": evt.currentTarget.name, "answer": evt.currentTarget.value }));
+//alert(this.getAttribute("data-index"))
+   socket.emit('message', JSON.stringify({"name": evt.currentTarget.name, "answer": evt.currentTarget.value, "answerIndex": this.getAttribute("data-index") }));
   });
 
   $('.like').bind('click', function(evt) {
@@ -31,7 +36,7 @@ $(document).ready(function() {
   }
 
   socket.on('server_message', function(data){
-    /* how the server responds
+    /* how the app responds
      var jsonResponse = JSON.stringify({
      "questionNumber": vote[0],
      "answer": vote[1],
@@ -40,120 +45,30 @@ $(document).ready(function() {
      })
      */
     //parse receiver and add to correct question
-    var vote = JSON.parse(data);
+    var vote = JSON.parse(data);  // now with answerArray
+    var buildString = "",
+        args =[];
 
-    var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
-    var noPercent = 1 - yesPercent;
-    var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
+    for (var i=0; i<vote.answerArray.length;i++){
+      buildString +=  (i+1) + ": "+ vote.answerArray[i] + ", ";
+      args.push(vote.answerArray[i])
+    }
+    buildString = buildString.slice(0, -2);
+
+    //var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
     if (vote.chartType === "bar"){
-      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions.apply(this, args))
     }
     else if (vote.chartType === "pie") {
-      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+      $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions.apply(null, args))
     }
     else {
       $('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
     }
   }); //END SOCKET server_message
 
-  function pieOptions(yesPercent, noPercent) {
-    return {
-      chart: {
-        //renderTo: 'container',
-        width: '400',
-        height: '200',
-        type: 'pie',
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false
-      },
-      title: {
-        text: ''
-      },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          size: '80%',
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            color: '#000000',
-            connectorColor: '#000000',
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-          }
-        }
-      },
-      series: [{
-        type: 'pie',
-        //name: 'Browser share',
-        data: [
-          ['Yes', yesPercent],
-          ['No', noPercent]
-        ]
-      }]
-    }
-  }
-  function barOptions(yesCount, noCount) {
-  return {
-    chart: {
-      height: '200',
-      width: '400',
-      type: 'column'
-    },
-    title: {
-      text: ''
-    },
-    subtitle: {
-      text: ''
-    },
-    xAxis: {
-      labels: '',
-      title: {
-        text: 'Votes'
-      },
-      categories: [
-        'Yes',
-        'No'
-      ]
-    },
-    yAxis: {
-      min: 0,
-      title: {
-        text: 'Counts'
-      }
-    },
-    tooltip: {enabled:false},
-//    tooltip: {
-//      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-//      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-//        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-//      footerFormat: '</table>',
-//      shared: true,
-//      useHTML: true
-//    },
-    plotOptions: {
-      column: {
-        pointPadding: 0.2,
-        borderWidth: 0
-      }
-    },
-    series: [{
-      name: 'Yes',
-      data: [yesCount]
-
-    }, {
-      name: 'No',
-      data: [noCount]
-
-    }]
-  }
- }
-
   socket.on('server_like', function(data){
-  /* how the server responds
+  /* how the app responds
    var jsonResponse = JSON.stringify({
    "likeNumber": vote[0],
    "answer": vote[1],
@@ -171,7 +86,7 @@ $(document).ready(function() {
 }); //END SOCKET server_like
 
   socket.on('server_poll_init', function(data){
-    /* how the server responds
+    /* how the app responds
      var jsonResponse = JSON.stringify({
      "likeNumber": vote[0],
      "answer": vote[1],
@@ -188,18 +103,25 @@ $(document).ready(function() {
     $('#multi-vote').text('multiVote is ' + (votes[0].multiVote === 'true' ? 'on' : 'off'));
 
     votes.map(function(vote, index){
-      var yesPercent = vote.yesCount/(vote.yesCount + vote.noCount);
-      var noPercent = 1 - yesPercent;
-      var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N';
+      var buildString = "", args =[];
 
       gChartType = vote.chartType
+
       $('#chart-type').val(gChartType);
 
+
+      for (var i=0; i<vote.answerArray.length;i++){
+        buildString +=  (i+1) + ": "+ vote.answerArray[i] + ", ";
+        args.push(vote.answerArray[i])
+      }
+      buildString = buildString.slice(0, -2);
+
+      //var buildString = vote.yesCount +  ' Y, ' + vote.noCount + ' N'
       if (vote.chartType === "bar"){
-        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions(vote.yesCount, vote.noCount))
+        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(barOptions.apply(null, args))
       }
       else if (vote.chartType === "pie") {
-        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions(yesPercent, noPercent))
+        $('[name=' + vote.questionNumber + ']').siblings('.result').highcharts(pieOptions.apply(null, args))
       }
       else {
         $('[name=' + vote.questionNumber + ']').siblings('.result').html(buildString);
@@ -208,7 +130,7 @@ $(document).ready(function() {
   }); //END SOCKET server_poll_init
 
   socket.on('server_like_init', function(data){
-    /* how the server responds
+    /* how the app responds
      var jsonResponse = JSON.stringify({
      "likeNumber": vote[0],
      "answer": vote[1],
@@ -257,5 +179,96 @@ $(document).ready(function() {
 //      }
     })
   }); //todo
+
+
+  function pieOptions() {
+
+    return {
+      chart: {
+        //renderTo: 'container',
+        width: '400',
+        height: '200',
+        type: 'pie',
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false
+      },
+      title: {
+        text: ''
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          size: '70%',
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            color: '#000000',
+            connectorColor: '#000000',
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          }
+        }
+      },
+      series: [{
+        type: 'pie',
+        //name: 'Browser share',
+        data:
+              Array.prototype.slice.call(arguments, 0).
+                   reduce(function(sum, unit, index, arr){
+                       return sum.concat( [[ ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'][index], unit/(arr.reduce(function(sum, unit,index, arr){return sum += unit},0) ) ]] ) }, [])
+      }]
+    }
+  }
+  function barOptions() {
+    //var ed = Array.prototype.slice.call(arguments, 0).reduce(function(sum, unit, index, arr){return sum.concat({name: index, data: [unit]}) }, [])
+    //debugger
+    return {
+      chart: {
+        height: '200',
+        width: '400',
+        type: 'column'
+      },
+      title: {
+        text: ''
+      },
+      subtitle: {
+        text: ''
+      },
+      xAxis: {
+        labels: '',
+        title: {
+          text: 'Votes'
+        },
+        categories: [
+          'count'
+        ]
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Counts'
+        }
+      },
+      tooltip: {enabled:true},
+//    tooltip: {
+//      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+//      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+//        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+//      footerFormat: '</table>',
+//      shared: true,
+//      useHTML: true
+//    },
+      plotOptions: {
+        column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        }
+      },
+      series: Array.prototype.slice.call(arguments, 0).reduce(function(sum, unit, index, arr){return sum.concat({name: ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'][index], data: [unit]}) }, [])
+    }
+  }
   //END DOCUMENT READY
 });
