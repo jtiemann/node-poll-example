@@ -4,11 +4,12 @@
 $(document).ready(function() {   
 
   var socket = io.connect(), gChartType;
-
-  socket.emit('setup', {
+  var conf = {
     "title": "T's JS Test1",
-    "numAnswers": [3,2,2,2,2,2,2]
-  });
+    "numAnswers": [3,2,4,2,2,2,2]
+  }
+
+  socket.emit('setup', conf);
 
   $('.sender').bind('click', function(evt) {
    //alert('thanks for your vote: ' + (evt.currentTarget.value + ' on the question:' + $(this).siblings().first().text()));
