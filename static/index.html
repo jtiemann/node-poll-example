@@ -14,10 +14,14 @@
 
 </head>
 <body>
+
+
+
 <h2>vote: node-socket.io example</h2>
 
 <div id="poll">
     <!--<div id="CountDownTimer" data-timer="60" style="width: 1000px; height: 250px;"></div>-->
+
 
     <button id="multi-vote" value="false" style="display:none;">multiVote is off</button>
     <select id="chart-type" style="display:none;">
@@ -25,69 +29,101 @@
         <option value="pie">pie</option>
         <option value="text">text</option>
     </select>
-    <div>
-        <p>Do you code javascript daily?
-            <button class="like" name="0" value="like">like</button>
-            <button class="like" name="0" value="notLike">not like</button>
-        </p>
-        <input class="sender" type="radio" name="0" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="0" value="no" data-index="1">no<br>
-        <input class="sender" type="radio" name="0" value="sometimes" data-index="2">Sometimes<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>Do you use javascript outside of the browser (node, postgres,..)?
-            <button class="like" name="1" value="like">like</button>
-            <button class="like" name="1" value="notLike">not like</button>
-        </p>
-        <input class="sender" type="radio" name="1" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="1" value="no" data-index="1">no<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>Do you use currying, partials, or memoization?
-            <button class="like" name="2" value="like">like</button>
-            <button class="like" name="2" value="notLike">not like</button>
-        </p>
-        <input class="sender" type="radio" name="2" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="2" value="no" data-index="1">no<br>
-        <input class="sender" type="radio" name="2" value="never" data-index="2">no<br>
-        <input class="sender" type="radio" name="2" value="sometimes" data-index="3">no<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>Do you use map, filter, and reduce idiomatically?
-            <button class="like" name="3" value="like">like</button>
-            <button class="like" name="3" value="notLike">not like</button>
-        </p>
-        <input class="sender" type="radio" name="3" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="3" value="no" data-index="1">no<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>Do you know when/why variable hoisting occurs?
-            <button class="like" name="4" value="like">like</button>
-            <button class="like" name="4" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="4" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="4" value="no" data-index="1">no<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>[1,2,3].reduce(function(sum, unit, index){return sum * (unit + 1) },1) === 24?
-            <button class="like" name="5" value="like">like</button>
-            <button class="like" name="5" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="5" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="5" value="no" data-index="1">no<br>
-        <label class="result"></label>
-    </div>
-    <div>
-        <p>[1,2,3].reduce(function(sum, unit, index){return sum += unit * unit * unit },0) === 36?
-            <button class="like" name="6" value="like">like</button>
-            <button class="like" name="6" value="notLike">not like</button></p>
-        <input class="sender" type="radio" name="6" value="yes" data-index="0">yes<br>
-        <input class="sender" type="radio" name="6" value="no" data-index="1">no<br>
-        <label class="result"></label>
-    </div>
+
+    <t-poll data-conf='{"title": "Ts JS Test1","numAnswers": [],"defaultChartType": "bar","defaultMultiVote": "true"}'
+            data-questions='{
+                            "qandas": [
+                                        ["Do you code javascript daily?",["yes", "no"]],
+                                        ["Do you use javascript outside of the browser (node, postgres,..)?",["yes", "no", "rarely"]],
+                                        ["Do you use currying, partials, or memoization?",["yes", "no", "never", "sometimes"]],
+                                        ["Do you use map, filter, and reduce idiomatically?",["yes", "no"]],
+                                        ["Do you know when/why variable hoisting occurs?",["yes", "no"]],
+                                        ["[1,2,3].reduce(function(sum, unit, index){return sum * (unit + 1) },1) === 24?",["yes", "oo"]],
+                                        ["[1,2,3].reduce(function(sum, unit, index){return sum += unit * unit * unit },0) === 36",["yes", "no"]]]}'>
+    </t-poll>
+
+    <!--<div>-->
+        <!--<p>Do you code javascript daily?-->
+            <!--<button class="like" name="0" value="like">like</button>-->
+            <!--<button class="like" name="0" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="0" value="yes" data-index="0"/>yes</li>-->
+        <!--<li><input class="sender" type="radio" name="0" value="no" data-index="1"/>no</li>-->
+        <!--<li><input class="sender" type="radio" name="0" value="sometimes" data-index="2"/>Sometimes</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+
+
+    <!--<div>-->
+        <!--<p>Do you use javascript outside of the browser (node, postgres,..)?-->
+            <!--<button class="like" name="1" value="like">like</button>-->
+            <!--<button class="like" name="1" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="1" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="1" value="no" data-index="1">no</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<p>Do you use currying, partials, or memoization?-->
+            <!--<button class="like" name="2" value="like">like</button>-->
+            <!--<button class="like" name="2" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="2" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="2" value="no" data-index="1">no</li>-->
+        <!--<li><input class="sender" type="radio" name="2" value="never" data-index="2">never</li>-->
+        <!--<li><input class="sender" type="radio" name="2" value="sometimes" data-index="3">sometimes</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<p>Do you use map, filter, and reduce idiomatically?-->
+            <!--<button class="like" name="3" value="like">like</button>-->
+            <!--<button class="like" name="3" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="3" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="3" value="no" data-index="1">no</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<p>Do you know when/why variable hoisting occurs?-->
+            <!--<button class="like" name="4" value="like">like</button>-->
+            <!--<button class="like" name="4" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="4" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="4" value="no" data-index="1">no</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<p>[1,2,3].reduce(function(sum, unit, index){return sum * (unit + 1) },1) === 24?-->
+            <!--<button class="like" name="5" value="like">like</button>-->
+            <!--<button class="like" name="5" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="5" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="5" value="no" data-index="1">no</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<p>[1,2,3].reduce(function(sum, unit, index){return sum += unit * unit * unit },0) === 36?-->
+            <!--<button class="like" name="6" value="like">like</button>-->
+            <!--<button class="like" name="6" value="notLike">not like</button>-->
+        <!--</p>-->
+        <!--<ol>-->
+        <!--<li><input class="sender" type="radio" name="6" value="yes" data-index="0">yes</li>-->
+        <!--<li><input class="sender" type="radio" name="6" value="no" data-index="1">no</li>-->
+        <!--</ol>-->
+        <!--<label class="result"></label>-->
+    <!--</div>-->
 </div>
 
 

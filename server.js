@@ -20,11 +20,10 @@ var voteSocket = io.listen(app.listen(port), { log: false });
 var multiVote = 'false';
 var chartType = "bar";
 
-var answerArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
+var answerArr2 = [],// array of answers for each question [[3, 5]] is 3 a's and 5 b's for question name 0
     voter = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
     voterAddressArr = [], //an array of voter ip's'
-    voterArr = [],
-    answerArr2 = []; // array of voter objects
+    voterArr = []
 
 var likesArr = [],// array of yes, no answers for each question [3, 5] is 3 yeses and 5 nos for question name 0
   liker = {},//contains voter.address, voter.votes, an object containing an array of answers indexed by question number (name)
@@ -43,6 +42,7 @@ voteSocket.on('connection', function(socket){
       var answeredQuestionsIndexArray = voterArr[conIdx].votes.map(function(unit, index){return unit !== "undefined" ? index : false}).filter(function(unit){return unit !== false});
       // for each question in ed, build a jsonResponse and concat
       var jsonInit = JSON.stringify(answeredQuestionsIndexArray.reduce(function(sum, unit, index){
+        //SIDE EFFECT
         socket.join(unit);
 
         return sum.concat({
@@ -87,7 +87,10 @@ voteSocket.on('connection', function(socket){
 
   socket.on('setup', function(data){
      if (answerArr2.length > 0) return;
-     var setup = data; // data.title, data.numAnswers (an array of the number of choices for a question
+
+     var setup = JSON.parse(data); // data.title, data.numAnswers (an array of the number of choices for a question
+     chartType = setup.defaultChartType || "bar";
+     multiVote = setup.defaultMultiVote || "false"
      answerArr2 = setup.numAnswers.reduce(function(sum, unit, index, arr){
        // create array of size unit and append to array by index (question is by index, answers nested in tham
        var ed = [];

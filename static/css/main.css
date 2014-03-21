@@ -325,6 +325,23 @@ input.sender {
 h2 {
     text-align: center;
 }
+
+ol {
+    counter-reset: list;
+    margin: 0;
+}
+
+ol > li {
+    list-style: none;
+    position: relative;
+}
+
+ol > li:before {
+    counter-increment: list;
+    content: counter(list, lower-alpha) ") ";
+    position: absolute;
+    left: .8em;
+}
 /* for responsive highcharts, wrap chart...
 <div class="chart-wrapper">
     <div class="chart-inner">
