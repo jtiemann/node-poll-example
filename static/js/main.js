@@ -12,9 +12,16 @@
   })
   pv.numAnswersArr = pv.qandaArray.reduce(function(sum, unit, index, arr){
     return sum.concat(unit[1].length)
-  }, [])
+  }, []);
+
+  //BUILD TEST
   document.body.getElementsByTagName("t-poll")[0].innerHTML = pv.struct.join(" ");
 
+  //BUILD CONF
+  conf = document.body.getElementsByTagName("t-poll")[0].getAttribute('data-conf');
+  //calculate numAnswers
+  pv.parsedConf = JSON.parse(conf)
+  pv.parsedConf.numAnswers = pv.numAnswersArr
   //
 
 //build structures, append to  document.body.getElementsByTagName("t-poll")[0]
@@ -68,12 +75,8 @@ $(document).ready(function() {
    "defaultMultiVote": "true"
    }'
    */
-    conf = document.body.getElementsByTagName("t-poll")[0].getAttribute('data-conf');
-  //calculate numAnswers
-   var parsedConf = JSON.parse(conf)
-   parsedConf.numAnswers = pv.numAnswersArr
 
-    socket.emit('setup', JSON.stringify(parsedConf));
+    socket.emit('setup', JSON.stringify(pv.parsedConf));
 
   // UI EVENTS
   $('#poll').on('click', '.sender', function(evt) {
@@ -88,11 +91,11 @@ $(document).ready(function() {
   //END UI EVENTS
 
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    $('#multi-vote').val(JSON.parse(conf).defaultMultiVote || 'false')
+    $('#multi-vote').val(pv.parsedConf.defaultMultiVote || 'false')
     $('#multi-vote').text($('#multi-vote').val() === 'true' ? "multiVote is on" : "multiVote is off")
     $('#multi-vote').css("display", "block");
 
-    $('#chart-type').val(JSON.parse(conf).defaultChartType || "bar")
+    $('#chart-type').val(pv.parsedConf.defaultChartType || "bar")
     $('#chart-type').css("display", "block");
 
     // UI EVENTS
@@ -109,14 +112,6 @@ $(document).ready(function() {
   }
     //
   socket.on('server_message', function(data){
-    /* how the app responds
-     var jsonResponse = JSON.stringify({
-     "questionNumber": vote[0],
-     "answer": vote[1],
-     "yesCount": answerArr[parseInt(vote[0])*2] || 0,
-     "noCount": answerArr[parseInt(vote[0])*2+1] || 0
-     })
-     */
     //parse receiver and add to correct question
     var vote = JSON.parse(data);  // now with answerArray
     $('#chart-type').val(vote.chartType);
