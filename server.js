@@ -1,3 +1,5 @@
+/* Author: Jon "T-Bone" Tiemann
+ */
 //setup Dependencies
 var connect = require('connect')
     , express = require('express')
@@ -181,15 +183,6 @@ voteSocket.on('connection', function(socket){
       socket.broadcast.emit('server_like',jsonResponse);
       socket.emit('server_like',jsonResponse);
    // }
-
-//    var jsonResponse = JSON.stringify({
-//      "questionNumber": vote.name,
-//      "answer": vote.answer,
-//      "yesCount": answerArr[parseInt(vote.name)*2] || 0,
-//      "noCount": answerArr[parseInt(vote.name)*2+1] || 0
-//    })
-//    socket.broadcast.emit('server_message',jsonResponse);
-//    socket.emit('server_message',jsonResponse);
 
   });
 

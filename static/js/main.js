@@ -1,8 +1,9 @@
 /* Author: Jon "T-Bone" Tiemann
 */
-//BEGIN WIDGET
+//BEGIN WIDGET poll-vote
 (function(pv, $){
-  pv.qandaArray =  JSON.parse(document.body.getElementsByTagName("t-poll")[0].getAttribute('data-questions')).qandas;
+  pv.element = "poll-vote";
+  pv.qandaArray =  JSON.parse(document.body.getElementsByTagName(pv.element)[0].getAttribute('data-questions')).qandas;
   pv.struct = pv.qandaArray.map(function(unit, index, arr){
     var ed = '<p>' + unit[0] + '<button class="like" name="' + index + '" value="like">like</button><button class="like" name="' + index + '" value="notLike">not like</button></p>';
        var jim = unit[1].reduce(function(sum, piece, idx){
@@ -15,16 +16,15 @@
   }, []);
 
   //BUILD TEST
-  document.body.getElementsByTagName("t-poll")[0].innerHTML = pv.struct.join(" ");
+  document.body.getElementsByTagName(pv.element)[0].innerHTML = pv.struct.join(" ");
 
   //BUILD CONF
-  pv.conf = document.body.getElementsByTagName("t-poll")[0].getAttribute('data-conf');
+  pv.conf = document.body.getElementsByTagName(pv.element)[0].getAttribute('data-conf');
   //calculate numAnswers
   pv.parsedConf = JSON.parse(pv.conf)
   pv.parsedConf.numAnswers = pv.numAnswersArr
   //
 
-//build structures, append to  document.body.getElementsByTagName("t-poll")[0]
 /*
  <div>
  <p>Do you code javascript daily?
@@ -39,7 +39,6 @@
  <label class="result"></label>
  </div>
  */
-
 }(window.pv = window.pv || {}, jQuery))
 //END WIDGET
 
@@ -69,7 +68,7 @@ $(document).ready(function() {
   // INIT SERVER
   /*
    data-conf='{
-   "title": "Ts JS Test1",
+   "title": "Ts JS Test1", //todo
    "numAnswers": [2,2],
    "defaultChartType": "pie",
    "defaultMultiVote": "true"
@@ -77,6 +76,7 @@ $(document).ready(function() {
    */
 
     socket.emit('setup', JSON.stringify(pv.parsedConf));
+  //END INIT SERVER
 
   // UI EVENTS
   $('#poll').on('click', '.sender', function(evt) {
@@ -110,7 +110,7 @@ $(document).ready(function() {
       socket.emit('chartType', this.value);
     });
   }
-    //
+
   socket.on('server_message', function(data){
     //parse receiver and add to correct question
     var vote = JSON.parse(data);  // now with answerArray

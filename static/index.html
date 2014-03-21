@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title></title>
     <meta name="description">
-    <meta name="author">
+    <meta name="author" content="Jon Tiemann">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/main.css">
 
@@ -15,13 +15,10 @@
 </head>
 <body>
 
+  <h2>vote: node-socket.io example</h2>
 
-
-<h2>vote: node-socket.io example</h2>
-
-<div id="poll">
+  <div id="poll">
     <!--<div id="CountDownTimer" data-timer="60" style="width: 1000px; height: 250px;"></div>-->
-
 
     <button id="multi-vote" value="false" style="display:none;">multiVote is off</button>
     <select id="chart-type" style="display:none;">
@@ -30,8 +27,8 @@
         <option value="text">text</option>
     </select>
 
-    <t-poll data-conf='{"title": "Ts JS Test1","defaultChartType": "bar","defaultMultiVote": "true"}'
-            data-questions='{
+    <poll-vote data-conf='{"title": "Ts JS Test1","defaultChartType": "bar","defaultMultiVote": "true"}'
+               data-questions='{
                             "qandas": [
                                         ["Do you code javascript daily?",["yes", "no"]],
                                         ["Do you use javascript outside of the browser (node, postgres,..)?",["yes", "no", "rarely"]],
@@ -40,7 +37,7 @@
                                         ["Do you know when/why variable hoisting occurs?",["yes", "no"]],
                                         ["[1,2,3].reduce(function(sum, unit, index){return sum * (unit + 1) },1) === 24?",["yes", "oo"]],
                                         ["[1,2,3].reduce(function(sum, unit, index){return sum += unit * unit * unit },0) === 36",["yes", "no"]]]}'>
-    </t-poll>
+    </poll-vote>
 
     <!--<div>-->
         <!--<p>Do you code javascript daily?-->
@@ -124,11 +121,9 @@
         <!--</ol>-->
         <!--<label class="result"></label>-->
     <!--</div>-->
-</div>
+  </div>
 
-
-
-<footer>
+  <footer>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <!--<script type="text/javascript" src="/js/TimeCircles.js"></script>-->
     <!--<script>$("#CountDownTimer").TimeCircles({ time: { Days: { show: false }, Hours: { show: false }, Minutes: { show: false } }});</script>-->
@@ -137,6 +132,7 @@
     <script defer src="/socket.io/socket.io.js"></script>
     <!--if lt IE 7script(defer, src='//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js')
     script(defer)
-      window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})--></footer>
+      window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})-->
+  </footer>
 </body>
 </html>
