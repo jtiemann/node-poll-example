@@ -18,9 +18,9 @@
   document.body.getElementsByTagName("t-poll")[0].innerHTML = pv.struct.join(" ");
 
   //BUILD CONF
-  conf = document.body.getElementsByTagName("t-poll")[0].getAttribute('data-conf');
+  pv.conf = document.body.getElementsByTagName("t-poll")[0].getAttribute('data-conf');
   //calculate numAnswers
-  pv.parsedConf = JSON.parse(conf)
+  pv.parsedConf = JSON.parse(pv.conf)
   pv.parsedConf.numAnswers = pv.numAnswersArr
   //
 
