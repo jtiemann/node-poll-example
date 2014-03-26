@@ -1,19 +1,17 @@
 {
   "name": "node-poll",
   "description": "Live Polling",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jtieman/node-poll-example.git"
+  },
   "author": "jon.tiemann@gmail.com",
   "version": "0.0.1",
   "dependencies": {
-    "connect": "2.14.3",
     "express": "3.4.8",
-    //"jade": "0.20.0",
-    //"mongoose": "2.4.8",
     "socket.io": "0.9.16"
   },
   "devDependencies": {
-    //"vows": "0.5.x",
-	//"mocha": "*",
-	//"should": "*"
   },
   "engine": "node >= 0.6.6"
 }

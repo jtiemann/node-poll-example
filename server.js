@@ -1,8 +1,7 @@
 /* Author: Jon "T-Bone" Tiemann
  */
 //setup Dependencies
-var connect = require('connect')
-    , express = require('express')
+var express = require('express')
     , io = require('socket.io')
     , port = (process.env.PORT || 4001);
 
@@ -12,7 +11,7 @@ app.configure(function(){
     //app.use(connect.bodyParser());
     //app.use(express.cookieParser());
     //app.use(express.session({ secret: "shhhhhhhhh!"}));
-    app.use(connect.static(__dirname + '/static'));
+    app.use(express.static(__dirname + '/static'));
     app.use(app.router);
 });
 
