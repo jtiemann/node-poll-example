@@ -12,7 +12,7 @@ app.configure(function(){
     //app.use(express.cookieParser());
     //app.use(express.session({ secret: "shhhhhhhhh!"}));
     app.use(express.static(__dirname + '/static'));
-    app.use(app.router);
+    //app.use(app.router);
 });
 
 //Setup Socket.IO
@@ -207,8 +207,12 @@ voteSocket.on('connection', function(socket){
 
 /////// ADD ALL YOUR ROUTES HERE  /////////
 
-app.get('/', function(req,res){
-  res.render('index.html');
-});
+// app.get('/', function(req,res){
+//   res.render('index.html');
+// });
+//
+// app.get('/pizza', function(req,res){
+//   res.render('pizza.html');
+// });
 
 console.log('Listening on http://0.0.0.0:' + port );

@@ -44,6 +44,7 @@
 
 $(document).ready(function() {
 
+
   var socket = io.connect(), 
       conf = "",
       chartSelector = "$('[name=\"questionNumber\"]').parent().parent().children('.result')",
@@ -95,7 +96,7 @@ $(document).ready(function() {
     $('#multi-vote').text($('#multi-vote').val() === 'true' ? "multiVote is on" : "multiVote is off")
     $('#multi-vote').css("display", "block");
 
-    $('#chart-type').val(pv.parsedConf.defaultChartType || "bar")
+    $('#chart-type').val(pv.parsedConf.defaultChartType || "pie")
     $('#chart-type').css("display", "block");
 
     // UI EVENTS
@@ -175,7 +176,8 @@ $(document).ready(function() {
           args = chartBuilderArray[1]
 
       //fire off the chart!
-      eval(chartSelector.replace(/questionNumber/, vote.questionNumber) + displayFunctions[chartTypes.indexOf(vote.chartType)]);
+/* ODD, shows if tbone!   eval(chartSelector.replace(/questionNumber/, vote.questionNumber) + displayFunctions[chartTypes.indexOf(vote.chartType)]); */
+
 //      if (vote.chartType === "bar"){
 //        $('[name=' + vote.questionNumber + ']').parent().parent().children('.result').highcharts(barOptions.apply(null, args))
 //      }
@@ -270,7 +272,7 @@ $(document).ready(function() {
       chart: {
         height: '200',
         width: '400',
-        type: 'column'
+        type: 'bar'
       },
       title: {
         text: ''

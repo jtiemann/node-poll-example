@@ -298,7 +298,7 @@ div[id^="highcharts-"] {
     margin: 0 0 0 0;
 }
 input.sender {
-    margin-left: 4%;
+    margin-left: 30px;
 }
 
 @media all and (max-width: 500px) {
