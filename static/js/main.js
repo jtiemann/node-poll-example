@@ -5,11 +5,15 @@
   pv.element = "poll-vote";
   pv.qandaArray =  JSON.parse(document.body.getElementsByTagName(pv.element)[0].getAttribute('data-questions')).qandas;
   pv.struct = pv.qandaArray.map(function(unit, index, arr){
-    var ed = '<p>' + unit[0] + '<button class="like" name="' + index + '" value="like">like</button><button class="like" name="' + index + '" value="notLike">not like</button></p>';
-       var jim = unit[1].reduce(function(sum, piece, idx){
-         return sum.concat('<li><input class="sender" type="radio" name="'+ index +'" value="' + piece + '" data-index="' + idx + '">' + piece + '</li>')
+    var ed = `<p>${unit[0]}<button class="like" name="${index}" value="like">like</button><button class="like" name="${index}" value="notLike">not like</button></p>`
+    //var ed = '<p>' + unit[0] + '<button class="like" name="' + index + '" value="like">like</button><button class="like" name="' + index + '" value="notLike">not like</button></p>';
+    var jim = unit[1].reduce(function(sum, piece, idx){
+         return sum.concat(`<li><input class="sender" type="radio" name="${index}" value="${piece}" data-index="${idx}">${piece}</li>`)
        },"")
-    return '<div>' + ed + '<ol>' + jim +'</ol><label class="result"></label></div>'
+    //var jim = unit[1].reduce(function(sum, piece, idx){
+      //   return sum.concat('<li><input class="sender" type="radio" name="'+ index +'" value="' + piece + '" data-index="' + idx + '">' + piece + '</li>')
+       //},"")
+    return `<div>${ed}<ol>${jim}</ol><label class="result"></label></div>`
   })
   pv.numAnswersArr = pv.qandaArray.reduce(function(sum, unit, index, arr){
     return sum.concat(unit[1].length)
