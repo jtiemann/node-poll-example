@@ -8,7 +8,7 @@
   "author": "jon.tiemann@gmail.com",
   "version": "0.0.1",
   "dependencies": {
-    "EventEmitter": "^1.0.0,
+    "EventEmitter": "^1.0.0",
     "express": "^3.21.2",
     "socket.io": "^0.9.19"
   },
